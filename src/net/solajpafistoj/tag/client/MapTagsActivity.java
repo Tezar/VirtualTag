@@ -1,7 +1,6 @@
 package net.solajpafistoj.tag.client;
 
 import android.os.Bundle;
-import android.app.Activity;
 
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
@@ -17,6 +16,8 @@ public class MapTagsActivity extends MapActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+        
+        //todo: get current position and zoom into it
         
         MapView mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
