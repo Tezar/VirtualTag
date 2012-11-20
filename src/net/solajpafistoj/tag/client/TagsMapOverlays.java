@@ -5,7 +5,11 @@ import java.util.ArrayList;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.ItemizedOverlay;
+import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
+
+//https://developers.google.com/maps/documentation/android/hello-mapview
+//https://github.com/commonsguy/cw-advandroid/blob/master/Maps/ILuvNooYawk/src/com/commonsware/android/luv/NooYawk.java
 
 public class TagsMapOverlays extends ItemizedOverlay {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
@@ -18,6 +22,12 @@ public class TagsMapOverlays extends ItemizedOverlay {
 	public void addOverlay(OverlayItem overlay) {
 	    mOverlays.add(overlay);
 	    populate();
+	}
+	
+	public void draw(android.graphics.Canvas canvas,MapView mapView,boolean shadow) {
+
+			super.draw(canvas, mapView, false);
+
 	}
 	
 

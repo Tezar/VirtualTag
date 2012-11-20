@@ -27,7 +27,7 @@ public class MapTagsActivity extends MapActivity {
         
         
         
-        Drawable drawable = this.getResources().getDrawable(R.drawable.androidmarker);
+        Drawable drawable =new TagDrawable();// this.getResources().getDrawable(R.drawable.androidmarker);
         TagsMapOverlays itemizedoverlay = new TagsMapOverlays(drawable);
         
         GeoPoint point = new GeoPoint(19240000,-99120000);
