@@ -30,6 +30,17 @@ public class TagDrawable extends Drawable {
 	        mPaint.setARGB(255, 255, 0, 0);
 	        mPaint.setStrokeWidth(20);
 	        mPaint.setStyle(Style.FILL);
+	        
+	        
+	        /*
+	         *  0,0 -----------> X
+	         *   |
+	         *   |
+	         *   |
+	         *   ¡
+	         *   Y
+	         */
+	        
 
 	        canvas.drawLine(0f, 0f, 100f,100f, mPaint);
 
