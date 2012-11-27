@@ -36,8 +36,6 @@ public class TagDrawable extends Drawable {
 	        mPaint.setARGB(255, 255, 255, 0);
 	        canvas.drawLine(0f, 0f, 0f,100f, mPaint);
 	        
-	        // Create an ArrayList for containing lines drawed on map
-	        ArrayList linjeListe = new ArrayList();
 	        
 	    }
 	    
