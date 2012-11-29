@@ -15,7 +15,7 @@
 		<uses-library android:name="com.google.android.maps" />
 		
         <activity
-            android:name=".MapTagsActivity"
+            android:name="net.solajpafistoj.tag.client.TagsMapActivity"
             android:label="@string/title_activity_map" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
