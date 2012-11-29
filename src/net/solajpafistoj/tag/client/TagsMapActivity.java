@@ -12,6 +12,8 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 
+import net.solajpafistoj.tag.client.ExtendedMapView;
+
 //based on https://developers.google.com/maps/documentation/android/hello-mapview
 
 public class TagsMapActivity extends MapActivity {
@@ -21,16 +23,19 @@ public class TagsMapActivity extends MapActivity {
 	//for controlling zooming, location etc...
 	private MapController mapController;
 	
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         
-        //todo: get current position and zoom into it
-        
-        MapView mapView = (MapView) findViewById(R.id.mapview);
+        ExtendedMapView mapView = (ExtendedMapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
 
+        // Add listener
+        mapView.setOnChangeListener(new MapViewChangeListener());
+        
+        
         mapController = mapView.getController();
         
         
@@ -60,13 +65,48 @@ public class TagsMapActivity extends MapActivity {
         								});
         
         
-        
-
         // todo: We need a button that lets us change to a draw mode.
         enableDraw = new EnableDraw(this);
         enableDraw.setBackgroundColor(Color.BLUE);
         enableDraw.requestFocus();
     }
+
+    
+    
+    
+    
+    private class MapViewChangeListener implements ExtendedMapView.OnChangeListener
+    {
+ 
+        public void onChange(MapView view, GeoPoint newCenter, GeoPoint oldCenter, int newZoom, int oldZoom)
+        {
+            // Check values
+            if ((!newCenter.equals(oldCenter)) && (newZoom != oldZoom))
+            {
+                // Map Zoom and Pan Detected
+                // TODO: Add special action here
+            }
+            else if (!newCenter.equals(oldCenter))
+            {
+                // Map Pan Detected
+                // TODO: Add special action here
+            }
+            else if (newZoom != oldZoom)
+            {
+                // Map Zoom Detected
+                // TODO: Add special action here
+            }
+        }
+    }    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
