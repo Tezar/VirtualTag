@@ -1,20 +1,21 @@
 package net.solajpafistoj.tag.client;
 
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.view.Menu;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
 import com.google.android.maps.OverlayItem;
 
-
-import android.view.Menu;
-
 //based on https://developers.google.com/maps/documentation/android/hello-mapview
 
 public class MapTagsActivity extends MapActivity {
 
+	EnableDraw enableDraw;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,7 +37,11 @@ public class MapTagsActivity extends MapActivity {
         itemizedoverlay.addOverlay(overlayitem);
         
         mapView.getOverlays().add(itemizedoverlay);
-        
+
+        // todo: We need a button that lets us change to a draw mode.
+        enableDraw = new EnableDraw(this);
+        enableDraw.setBackgroundColor(Color.BLUE);
+        enableDraw.requestFocus();
     }
 
     @Override

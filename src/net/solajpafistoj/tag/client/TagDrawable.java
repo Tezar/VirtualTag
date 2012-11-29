@@ -64,4 +64,5 @@ public class TagDrawable extends Drawable {
 	    public void setColorFilter(ColorFilter arg0)
 	    {
 	    }
+
 	}
