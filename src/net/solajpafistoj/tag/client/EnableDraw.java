@@ -43,7 +43,6 @@ public class EnableDraw extends View implements OnTouchListener
 		drawLines(canvas);
 }
 
-	@Override
 	public boolean onTouch(View view, MotionEvent event) {
 		float xPos = event.getX();
 		float yPos = event.getY();

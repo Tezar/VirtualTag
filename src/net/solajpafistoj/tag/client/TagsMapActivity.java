@@ -8,6 +8,7 @@ import android.view.Menu;
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
 import com.google.android.maps.MapView;
+import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 
 //based on https://developers.google.com/maps/documentation/android/hello-mapview
@@ -25,9 +26,9 @@ public class TagsMapActivity extends MapActivity {
         
         MapView mapView = (MapView) findViewById(R.id.mapview);
         mapView.setBuiltInZoomControls(true);
+                
         
-        
-        
+        //test overlay of items 
         Drawable drawable =new TagDrawable();// this.getResources().getDrawable(R.drawable.androidmarker);
         TagsMapOverlays itemizedoverlay = new TagsMapOverlays(drawable);
         
@@ -37,6 +38,15 @@ public class TagsMapActivity extends MapActivity {
         itemizedoverlay.addOverlay(overlayitem);
         
         mapView.getOverlays().add(itemizedoverlay);
+        
+        
+        //current location overlay
+        
+        MyLocationOverlay mylocationOverlay = new MyLocationOverlay(this, mapView);
+        mylocationOverlay.enableMyLocation();
+        mapView.getOverlays().add(mylocationOverlay);
+        
+        
 
         // todo: We need a button that lets us change to a draw mode.
         enableDraw = new EnableDraw(this);
