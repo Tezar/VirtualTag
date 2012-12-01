@@ -1,9 +1,30 @@
 package net.solajpafistoj.tag.client;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
 import com.google.android.maps.MapActivity;
@@ -23,6 +44,7 @@ public class TagsMapActivity extends MapActivity {
 	//for controlling zooming, location etc...
 	private MapController mapController;
 	
+	protected TagsMapOverlays activeOverlay= null;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,18 +60,7 @@ public class TagsMapActivity extends MapActivity {
         
         mapController = mapView.getController();
         
-        
-        //test overlay of items 
-        Drawable drawable =new TagDrawable();// this.getResources().getDrawable(R.drawable.androidmarker);
-        TagsMapOverlays itemizedoverlay = new TagsMapOverlays(drawable);
-        
-        GeoPoint point = new GeoPoint(19240000,-99120000);
-        OverlayItem overlayitem = new OverlayItem(point, "Hola, Mundo!", "I'm in Mexico City!");
-        
-        itemizedoverlay.addOverlay(overlayitem);
-        
-        mapView.getOverlays().add(itemizedoverlay);
-        
+   
         
         //current location overlay
         
@@ -72,7 +83,29 @@ public class TagsMapActivity extends MapActivity {
     }
 
     
-    
+    protected void displayTags( ArrayList<TagItem> items )
+    {
+    	ExtendedMapView mapView = (ExtendedMapView) findViewById(R.id.mapview);
+    	
+    	if(activeOverlay != null){
+    		mapView.getOverlays().remove(activeOverlay);
+    		activeOverlay = null;
+    	}
+        
+        Drawable drawable =new TagDrawable();// this.getResources().getDrawable(R.drawable.androidmarker);
+        activeOverlay = new TagsMapOverlays(drawable);
+        
+        
+        int count = items.size();
+        for (int i = 0; i < count; i++) {
+            OverlayItem overlayitem = new OverlayItem(items.get(i).location, "Hola, Mundo!", "I'm in Mexico City!");	
+            activeOverlay.addOverlay(overlayitem);
+        }
+        
+        mapView.getOverlays().add(activeOverlay);
+        
+    	
+    }
     
     
     private class MapViewChangeListener implements ExtendedMapView.OnChangeListener
@@ -83,11 +116,14 @@ public class TagsMapActivity extends MapActivity {
             // Check values
             if ((!newCenter.equals(oldCenter)) && (newZoom != oldZoom))
             {
-                // Map Zoom and Pan Detected
+            	// Map Zoom and Pan Detected
                 // TODO: Add special action here
             }
             else if (!newCenter.equals(oldCenter))
             {
+            	DownloadTagsTask t = new DownloadTagsTask();
+            	t.execute(newCenter);
+            	
                 // Map Pan Detected
                 // TODO: Add special action here
             }
@@ -101,9 +137,99 @@ public class TagsMapActivity extends MapActivity {
     
     
     
-    
-    
-    
+    private class DownloadTagsTask extends AsyncTask<GeoPoint, Integer, ArrayList<TagItem> > {
+    	protected boolean error = false;
+    	
+        protected ArrayList<TagItem> doInBackground(GeoPoint... points) {
+        	GeoPoint point = points[0];
+
+        	//error free
+        	error = false;
+        	
+        	ArrayList<TagItem> items = new ArrayList<TagItem>(); 
+
+        	double lat = point.getLatitudeE6()  * 1E-6;
+        	double lon = point.getLongitudeE6()  * 1E-6;
+        	
+        	String url = "http://virtualtagmap.appspot.com/s?lat="+String.valueOf(lat)+"&lon="+String.valueOf(lon);
+        	String data = fetchURL(url);
+        	
+        	try {
+        		JSONObject object = new JSONObject( data );
+        		
+        		String state  = object.getString("state");
+        		if(! state.equals("ok")){
+        			error = true;
+        			return null;
+        		}
+        		
+        		JSONArray fetchedItems = object.getJSONArray("result");
+
+        	      for (int i = 0; i < fetchedItems.length(); i++) {
+        	        JSONObject jsonObject = fetchedItems.getJSONObject(i);
+        	        TagItem item = new TagItem();
+        	        
+        	        JSONArray location = jsonObject.getJSONArray("loc");
+        	        
+        	        item.location = new GeoPoint( (int)Math.round(location.getDouble(0) * 1E6) , (int)Math.round(location.getDouble(1) * 1E6) );
+        	        items.add(item);
+        	      }
+        	    } catch (Exception e) {
+        	      e.printStackTrace();
+        	    }
+        	
+            
+            return items;
+                
+               
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            
+        }
+
+        protected void onPostExecute(ArrayList<TagItem> result) {
+        	if(error){
+        		Toast.makeText(getApplicationContext(), "Error during fetch", Toast.LENGTH_SHORT).show();
+        		return;
+        	}
+        	if(result == null){
+        		Toast.makeText(getApplicationContext(), "You shall not be here", Toast.LENGTH_SHORT).show();
+        		return;
+        	}
+        	Toast.makeText(getApplicationContext(), "Displaying", Toast.LENGTH_LONG).show();
+        	displayTags(result);   
+        }
+        
+        
+        public String fetchURL(String url) {
+            StringBuilder builder = new StringBuilder();
+            HttpClient client = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            try {
+              HttpResponse response = client.execute(httpGet);
+              StatusLine statusLine = response.getStatusLine();
+              int statusCode = statusLine.getStatusCode();
+              if (statusCode == 200) {
+                HttpEntity entity = response.getEntity();
+                InputStream content = entity.getContent();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(content));
+                String line;
+                while ((line = reader.readLine()) != null) {
+                  builder.append(line);
+                }
+              } else {
+                Log.e("fetchUrl","Failed to download file");
+              }
+            } catch (ClientProtocolException e) {
+              e.printStackTrace();
+            } catch (IOException e) {
+              e.printStackTrace();
+            }
+            return builder.toString();
+          }
+        
+    }
     
     
     
