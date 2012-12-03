@@ -46,6 +46,8 @@ public class TagsMapActivity extends MapActivity {
 	
 	protected TagsMapOverlays activeOverlay= null;
 	
+	DownloadTagsTask downloadTask = null;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +115,15 @@ public class TagsMapActivity extends MapActivity {
  
         public void onChange(MapView view, GeoPoint newCenter, GeoPoint oldCenter, int newZoom, int oldZoom)
         {
-            // Check values
+        	if( downloadTask != null ){
+        		downloadTask.abort();
+        	}
+        	downloadTask = null;
+        	downloadTask = new DownloadTagsTask();
+        	downloadTask.execute(newCenter);
+        	
+        	
+        	// Check values
             if ((!newCenter.equals(oldCenter)) && (newZoom != oldZoom))
             {
             	// Map Zoom and Pan Detected
@@ -121,9 +131,7 @@ public class TagsMapActivity extends MapActivity {
             }
             else if (!newCenter.equals(oldCenter))
             {
-            	DownloadTagsTask t = new DownloadTagsTask();
-            	t.execute(newCenter);
-            	
+
                 // Map Pan Detected
                 // TODO: Add special action here
             }
@@ -139,6 +147,7 @@ public class TagsMapActivity extends MapActivity {
     
     private class DownloadTagsTask extends AsyncTask<GeoPoint, Integer, ArrayList<TagItem> > {
     	protected boolean error = false;
+    	protected boolean aborted = false;
     	
         protected ArrayList<TagItem> doInBackground(GeoPoint... points) {
         	GeoPoint point = points[0];
@@ -154,8 +163,11 @@ public class TagsMapActivity extends MapActivity {
         	String url = "http://virtualtagmap.appspot.com/s?lat="+String.valueOf(lat)+"&lon="+String.valueOf(lon);
         	String data = fetchURL(url);
         	
+        	if(aborted) return null;
+        	
         	try {
         		JSONObject object = new JSONObject( data );
+        		if(aborted) return null;
         		
         		String state  = object.getString("state");
         		if(! state.equals("ok")){
@@ -189,6 +201,9 @@ public class TagsMapActivity extends MapActivity {
         }
 
         protected void onPostExecute(ArrayList<TagItem> result) {
+        	//if our task is aborted, do not attemp to update results
+        	if(aborted) return;
+        	
         	if(error){
         		Toast.makeText(getApplicationContext(), "Error during fetch", Toast.LENGTH_SHORT).show();
         		return;
@@ -202,7 +217,7 @@ public class TagsMapActivity extends MapActivity {
         }
         
         
-        public String fetchURL(String url) {
+        protected  String fetchURL(String url) {
             StringBuilder builder = new StringBuilder();
             HttpClient client = new DefaultHttpClient();
             HttpGet httpGet = new HttpGet(url);
@@ -228,6 +243,11 @@ public class TagsMapActivity extends MapActivity {
             }
             return builder.toString();
           }
+        
+        public void abort(){
+        		aborted = true;
+        }
+    
         
     }
     
