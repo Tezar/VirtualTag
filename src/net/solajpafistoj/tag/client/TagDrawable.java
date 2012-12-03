@@ -1,13 +1,10 @@
 package net.solajpafistoj.tag.client;
 
-import java.util.ArrayList;
-
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
-import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
@@ -18,6 +15,7 @@ public class TagDrawable extends Drawable {
 	    private final Paint mPaint;
 	    private final RectF mRect;
 	    protected boolean firstDraw =true;
+	   
 	    
 	    public TagDrawable()
 	    {
@@ -38,6 +36,10 @@ public class TagDrawable extends Drawable {
 	        canvas.drawRoundRect(bounds, 10f, 10f, mPaint);
 	        
 
+	        
+
+	   
+		    
 	        
 	        /*
 	         *  0,0 -----------> X

@@ -39,7 +39,7 @@ import net.solajpafistoj.tag.client.ExtendedMapView;
 
 public class TagsMapActivity extends MapActivity {
 
-	EnableDraw enableDraw;
+	
 	
 	//for controlling zooming, location etc...
 	private MapController mapController;
@@ -78,10 +78,6 @@ public class TagsMapActivity extends MapActivity {
         								});
         
         
-        // todo: We need a button that lets us change to a draw mode.
-        enableDraw = new EnableDraw(this);
-        enableDraw.setBackgroundColor(Color.BLUE);
-        enableDraw.requestFocus();
     }
 
     
