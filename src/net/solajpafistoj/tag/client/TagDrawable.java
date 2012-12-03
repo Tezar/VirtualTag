@@ -7,30 +7,37 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
-//http://stackoverflow.com/questions/2967904/implementing-a-customized-drawable-in-android
+//http://stackoverflow.com/questions/2967904/implementing-a-customized-drawable-in-android	
 
 public class TagDrawable extends Drawable {
 
 	    private final Paint mPaint;
 	    private final RectF mRect;
+	    protected boolean firstDraw =true;
 	    
 	    public TagDrawable()
 	    {
 	        mPaint = new Paint();
 	        mRect = new RectF();
+	        mPaint.setStrokeWidth(3);
 	    }
 
 	    @Override
 	    public void draw(Canvas canvas)
 	    {
-	        // Set the correct values in the Paint
-	        mPaint.setARGB(255, 255, 0, 0);
-	        mPaint.setStrokeWidth(20);
+	    	RectF bounds = new RectF(this.getBounds());
+	    	mPaint.setARGB(255, 255, 255, 255);
 	        mPaint.setStyle(Style.FILL);
+	        canvas.drawRoundRect(bounds, 10f, 10f, mPaint);
+	        mPaint.setARGB(127, 0, 0, 0);
+	        mPaint.setStyle(Style.STROKE);
+	        canvas.drawRoundRect(bounds, 10f, 10f, mPaint);
 	        
+
 	        
 	        /*
 	         *  0,0 -----------> X
@@ -40,13 +47,20 @@ public class TagDrawable extends Drawable {
 	         *   ¡
 	         *   Y
 	         */
-	        
 
-	        canvas.drawLine(0f, 0f, 100f,100f, mPaint);
-
-	        mPaint.setARGB(255, 255, 255, 0);
-	        canvas.drawLine(0f, 0f, 0f,100f, mPaint);
 	    }
+	    
+	    @Override
+	    public int getIntrinsicHeight()
+	    {
+	    	return 30;
+	    }
+	    
+	    @Override
+	    public int getIntrinsicWidth()
+	    {
+	    	return 50;
+	    }	    
 	    
 
 	    @Override

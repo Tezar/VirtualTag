@@ -94,14 +94,19 @@ public class TagsMapActivity extends MapActivity {
     		activeOverlay = null;
     	}
         
-        Drawable drawable =new TagDrawable();// this.getResources().getDrawable(R.drawable.androidmarker);
-        activeOverlay = new TagsMapOverlays(drawable);
+        //Drawable drawable =new TagDrawable();// this.getResources().getDrawable(R.drawable.androidmarker);
+        activeOverlay = new TagsMapOverlays();
         
         
         int count = items.size();
         for (int i = 0; i < count; i++) {
-            OverlayItem overlayitem = new OverlayItem(items.get(i).location, "Hola, Mundo!", "I'm in Mexico City!");	
+            OverlayItem overlayitem = new OverlayItem(items.get(i).location, null, null);
+            Drawable marker = new TagDrawable();
+            marker.setBounds(0, 0, marker .getIntrinsicWidth(), marker .getIntrinsicHeight());
+            overlayitem.setMarker( marker );
+            
             activeOverlay.addOverlay(overlayitem);
+            //break; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
         
         mapView.getOverlays().add(activeOverlay);

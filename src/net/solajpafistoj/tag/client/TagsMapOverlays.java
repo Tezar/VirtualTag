@@ -14,8 +14,8 @@ import com.google.android.maps.OverlayItem;
 public class TagsMapOverlays extends ItemizedOverlay {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
 	
-	public TagsMapOverlays(Drawable defaultMarker) {
-		super(boundCenterBottom(defaultMarker));
+	public TagsMapOverlays() {
+		super(null);
 	}
 
 
