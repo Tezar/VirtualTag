@@ -11,7 +11,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
-//http://stackoverflow.com/questions/2967904/implementing-a-customized-drawable-in-android	
+//http://stackoverflow.com/questions/2967904/implementing-a-customized-drawable-in-android
+
 
 public class TagDrawable extends Drawable {
 
