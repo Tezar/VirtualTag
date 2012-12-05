@@ -18,12 +18,14 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.google.android.maps.GeoPoint;
@@ -33,7 +35,9 @@ import com.google.android.maps.MapView;
 import com.google.android.maps.MyLocationOverlay;
 import com.google.android.maps.OverlayItem;
 
-import net.solajpafistoj.tag.client.ExtendedMapView;
+import net.solajpafistoj.tag.client.TagDrawActivity;
+
+
 
 //based on https://developers.google.com/maps/documentation/android/hello-mapview
 
@@ -260,6 +264,18 @@ public class TagsMapActivity extends MapActivity {
         getMenuInflater().inflate(R.menu.activity_map, menu);
         return true;
     }
+    
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	switch (item.getItemId()) {
+	        case R.id.menu_settings:
+	        	startActivity(new Intent(TagsMapActivity.this, TagDrawActivity.class));
+	        return true;
+	        default:
+	        	return super.onOptionsItemSelected(item);
+    	}
+    }
+    
     
     @Override
     protected boolean isRouteDisplayed() {

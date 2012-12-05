@@ -24,6 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name="net.solajpafistoj.tag.client.TagDrawActivity"
+            android:label="@string/title_tag_draw" >
+        </activity>        
+        
     </application>
 
 </manifest>
