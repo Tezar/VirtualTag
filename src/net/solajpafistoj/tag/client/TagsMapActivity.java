@@ -43,7 +43,7 @@ import net.solajpafistoj.tag.client.TagDrawActivity;
 
 public class TagsMapActivity extends MapActivity {
 
-	
+	final int DRAW_INTENT = 1;
 	
 	//for controlling zooming, location etc...
 	private MapController mapController;
@@ -258,6 +258,23 @@ public class TagsMapActivity extends MapActivity {
     
     
     
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if(resultCode != RESULT_OK){	//let's skip all results that aren't ok
+			return;
+		}
+    	
+    	switch(requestCode){
+    		case DRAW_INTENT:
+    			String result=data.getStringExtra("result");
+    			Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+    			break;
+    		default:
+    			Toast.makeText(this, "Unknown result", Toast.LENGTH_SHORT).show();
+    	}
+    	
+    
+    }//onActivityResult    
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -269,7 +286,10 @@ public class TagsMapActivity extends MapActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
 	        case R.id.menu_settings:
-	        	startActivity(new Intent(TagsMapActivity.this, TagDrawActivity.class));
+	        	
+	        	Intent i = new Intent(this, TagDrawActivity.class);
+	        	startActivityForResult(i, DRAW_INTENT);
+	        	
 	        return true;
 	        default:
 	        	return super.onOptionsItemSelected(item);
