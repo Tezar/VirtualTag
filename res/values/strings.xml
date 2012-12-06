@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">VirtualTag</string>
@@ -5,5 +6,6 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_map">Map</string>
     <string name="title_tag_draw">Draw tag</string>
+    <string name="title_activity_splash">SplashActivity</string>
 
 </resources>
