@@ -18,17 +18,22 @@
         <activity
             android:name="net.solajpafistoj.tag.client.TagsMapActivity"
             android:label="@string/title_activity_map" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         
         <activity
             android:name="net.solajpafistoj.tag.client.TagDrawActivity"
             android:label="@string/title_tag_draw" >
         </activity>        
+
+         <activity
+            android:name="SplashActivity"
+            android:label="splash" >
+			<intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+         </activity>        
+        
         
     </application>
 

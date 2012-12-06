@@ -30,7 +30,7 @@ public class SplashActivity extends Activity{
 	    				sleep(100);
 	    				logoTimer = logoTimer + 100;
 	    			}
-	    			startActivity( new Intent ("net.solajpafistoj.tag.client.CLEARSCREEN"));
+	    			startActivity( new Intent (SplashActivity.this, TagsMapActivity.class));
 	    		} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
