@@ -8,17 +8,21 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 
 public class TagDrawActivity extends Activity {
+	EnableDraw enableDraw= null;
+	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.draw_tag);
+        //setContentView(R.layout.draw_tag);
         
-        EnableDraw enableDraw;
-	    enableDraw = new EnableDraw(this);
+        enableDraw = new EnableDraw(this);
         enableDraw.requestFocus();
+        
+        setContentView(enableDraw);
+        
         //todo: read data from accelerometer
         // maybe only when button is pushed / or movement on certain axis
-        
+        /*
         
         Button b = (Button) findViewById(R.id.done_button);
         b.setOnClickListener(new OnClickListener() {
@@ -29,6 +33,8 @@ public class TagDrawActivity extends Activity {
             	 finish();
             }
           });
+          
+          */
         
     }
 }
