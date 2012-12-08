@@ -7,6 +7,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -22,6 +23,21 @@ public class EnableDraw extends View implements OnTouchListener
 
 	public EnableDraw(Context context) {
 		super(context);
+		init();
+	}
+	
+	public EnableDraw(Context context, AttributeSet attrs) {
+		super( context, attrs );
+		init();
+	}
+ 
+	public EnableDraw(Context context, AttributeSet attrs, int defStyle) {
+		super( context, attrs, defStyle );
+		init();
+	}
+
+
+	public void init(){
 		setFocusable(true);
         setFocusableInTouchMode(true);
 
@@ -36,7 +52,10 @@ public class EnableDraw extends View implements OnTouchListener
         brushSize = 6;
 
         paint.setAntiAlias(true);
+		
 	}
+	
+	
 
 	@Override
     public void onDraw(Canvas canvas) {

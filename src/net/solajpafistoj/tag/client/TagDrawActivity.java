@@ -13,16 +13,10 @@ public class TagDrawActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.draw_tag);
-        
-        enableDraw = new EnableDraw(this);
-        enableDraw.requestFocus();
-        
-        setContentView(enableDraw);
+        setContentView(R.layout.draw_tag);
         
         //todo: read data from accelerometer
         // maybe only when button is pushed / or movement on certain axis
-        /*
         
         Button b = (Button) findViewById(R.id.done_button);
         b.setOnClickListener(new OnClickListener() {
@@ -34,7 +28,7 @@ public class TagDrawActivity extends Activity {
             }
           });
           
-          */
+         
         
     }
 }
