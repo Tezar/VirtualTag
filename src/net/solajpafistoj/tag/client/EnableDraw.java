@@ -3,113 +3,126 @@ package net.solajpafistoj.tag.client;
 
 import java.util.ArrayList;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.AttributeSet;
+import android.graphics.Path;
+import android.os.Bundle;
+import android.support.v4.view.ViewPager.LayoutParams;
 import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
+import android.util.AttributeSet;
 
-public class EnableDraw extends View implements OnTouchListener
-{
-	private ArrayList<Point> points;
-	private ArrayList<ArrayList<Point>> lines;
-	private Paint paint;
+public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable {
+   private ArrayList<Path> pointsToDraw = new ArrayList<Path>();
+    private Paint mPaint;
+    Path path;
 
-	private int brushSize;
-	private int brushColor;
+    public EnableDraw(Context context, AttributeSet attrs) {
+        // ODO Auto-generated method stub
+    	super(context, attrs);
+    	mPaint = new Paint();
+        mPaint.setDither(true);
+        mPaint.setColor(Color.RED);
+        mPaint.setStyle(Paint.Style.STROKE);
+        mPaint.setStrokeJoin(Paint.Join.ROUND);
+        mPaint.setStrokeCap(Paint.Cap.ROUND);
+        mPaint.setStrokeWidth(10);
 
-	public EnableDraw(Context context) {
-		super(context);
-		init();
-	}
-	
-	public EnableDraw(Context context, AttributeSet attrs) {
-		super( context, attrs );
-		init();
-	}
- 
-	public EnableDraw(Context context, AttributeSet attrs, int defStyle) {
-		super( context, attrs, defStyle );
-		init();
-	}
+        holder = getHolder();
+        setOnTouchListener(this);
+    }
 
 
-	public void init(){
-		setFocusable(true);
-        setFocusableInTouchMode(true);
 
-        this.setOnTouchListener(this);
 
-        // Initialize everything that needs initialization
-        points = new ArrayList<Point>();
-        lines = new ArrayList<ArrayList<Point>>();
-        lines.add(points);
-        paint = new Paint();
-        brushColor = Color.RED;
-        brushSize = 6;
 
-        paint.setAntiAlias(true);
-		
-	}
-	
-	
 
-	@Override
-    public void onDraw(Canvas canvas) {
-		drawLines(canvas);
-}
+        Thread t = null;
+        SurfaceHolder holder;
+        boolean isItOk = false ;
 
-	public boolean onTouch(View view, MotionEvent event) {
-		float xPos = event.getX();
-		float yPos = event.getY();
+        
 
-		// if the new point is too far away from the previous point, we assume it's the beginning of a new line
-		if(points.size() > 1)
-		{
-			if((xPos < ((points.get(points.size()-2).x)-(getWidth()*0.05))) ||
-			   (xPos > ((points.get(points.size()-2).x)+(getWidth()*0.05))) ||
-			   (yPos < ((points.get(points.size()-2).y)-(getHeight()*0.05)))||
-		   	   (yPos > ((points.get(points.size()-2).y)+(getWidth()*0.05))))
-			{
-				points = new ArrayList<Point>();
-				lines.add(points);
-			}
-		}
-		// This adds a point to our line and lets us redraw
-		
-			Point point = new Point(brushColor, brushSize);
-			point.x = xPos;
-			point.y = yPos;
-			points.add(point);
-			invalidate();
-		
-		
-			return true; 
-	}
+        @Override
+        public void run() {
+            // TODO Auto-generated method stub
+            while( isItOk == true){
 
-	public void drawLines(Canvas canvas)
-	{
-		Point point;
-		Point prev;
-		int i = 0;
-		int j = 0;
+                if(!holder.getSurface().isValid()){
+                    continue;
+                }
 
-		// For each list of points draw lines between the points
-		for(i = 0; i < lines.size(); i++){
-			for(j = 0; j < lines.get(i).size(); j++) {
-        		point = lines.get(i).get(j);
+                Canvas c = holder.lockCanvas();
+                c.drawARGB(255, 0, 0, 0);
+                onDraw(c);
+                holder.unlockCanvasAndPost(c);
+            }
+        }
 
-        		paint.setColor(point.color);
-        		paint.setStrokeWidth(point.size);
+        @Override
+        protected void onDraw(Canvas canvas) {
+            // TODO Auto-generated method stub
+            super.onDraw(canvas);
+                        synchronized(pointsToDraw)
+                        {
+            for (Path path : pointsToDraw) {
+                canvas.drawPath(path, mPaint);
+            }
+                        }
+        }
 
-            	if(j > 0){
-            		prev = lines.get(i).get(j-1);
-            		canvas.drawLine(prev.x, prev.y, point.x, point.y, paint);
-            	}
-        	}
-		}
-	}
+        public void pause(){
+            isItOk = false;
+            while(true){
+                try{
+                    t.join();
+                }catch(InterruptedException e){
+                    e.printStackTrace();
+                }
+                break;
+            }
+            t = null;
+        }
+
+        public void resume(){
+            isItOk = true;  
+            t = new Thread(this);
+            t.start();
+
+        }
+
+
+
+    
+
+
+    @Override
+    public boolean onTouch(View v, MotionEvent me) {
+        // TODO Auto-generated method stub
+                synchronized(pointsToDraw)
+                {
+        if(me.getAction() == MotionEvent.ACTION_DOWN){
+            path = new Path();
+            path.moveTo(me.getX(), me.getY());
+            //path.lineTo(me.getX(), me.getY());
+            pointsToDraw.add(path);
+        }else if(me.getAction() == MotionEvent.ACTION_MOVE){
+            path.lineTo(me.getX(), me.getY());
+        }else if(me.getAction() == MotionEvent.ACTION_UP){
+            //path.lineTo(me.getX(), me.getY());
+        }
+        }       
+        return true;
+
+    }
+
 }
