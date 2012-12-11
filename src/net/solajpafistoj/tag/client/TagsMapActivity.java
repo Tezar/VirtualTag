@@ -4,7 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
@@ -16,6 +20,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Intent;
@@ -49,7 +54,8 @@ public class TagsMapActivity extends MapActivity {
 	private MapController mapController;
 	
 	protected TagsMapOverlays activeOverlay= null;
-	
+	protected MyLocationOverlay mylocationOverlay;	
+		
 	DownloadTagsTask downloadTask = null;
 	
     @Override
@@ -70,7 +76,7 @@ public class TagsMapActivity extends MapActivity {
         
         //current location overlay
         
-        final MyLocationOverlay mylocationOverlay = new MyLocationOverlay(this, mapView);
+        mylocationOverlay = new MyLocationOverlay(this, mapView);
         mylocationOverlay.enableMyLocation();
         mapView.getOverlays().add(mylocationOverlay);
         
@@ -117,6 +123,7 @@ public class TagsMapActivity extends MapActivity {
     
     private class MapViewChangeListener implements ExtendedMapView.OnChangeListener
     {
+    	
  
         public void onChange(MapView view, GeoPoint newCenter, GeoPoint oldCenter, int newZoom, int oldZoom)
         {
@@ -256,6 +263,80 @@ public class TagsMapActivity extends MapActivity {
         
     }
     
+    private class UploadTagTask extends AsyncTask<JSONArray, Void, String > {
+    	
+    	protected GeoPoint location;
+    	
+    	public UploadTagTask(GeoPoint loc){
+    		super();
+    		location = loc;
+    	}
+
+    	
+        protected String doInBackground(JSONArray... data) {
+        	JSONArray strokes = data[0];
+        	
+        	double lat = location.getLatitudeE6()  * 1E-6;
+        	double lon = location.getLongitudeE6()  * 1E-6;
+        	StringBuilder builder = new StringBuilder();
+        	
+    	
+    		try {
+    	        // Construct data
+    	        String postData = URLEncoder.encode("strokes", "UTF-8") + "=" + URLEncoder.encode(strokes.toString() , "UTF-8");
+    	 
+    	        // Send data
+    	        URL url = new URL("http://virtualtagmap.appspot.com/s?lat="+String.valueOf(lat)+"&lon="+String.valueOf(lon));
+    	        URLConnection conn = url.openConnection();
+    	        conn.setDoOutput(true);
+    	        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
+    	        wr.write(postData);
+    	        wr.flush();
+    	 
+    	        // Get the response
+    	        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+    	        String line;
+    	        while ((line = rd.readLine()) != null) {
+    	        	builder.append(line);
+    	        }
+    	        wr.close();
+    	        rd.close();
+    	    } catch (Exception e) {
+    	    	e.printStackTrace();
+    	    }
+    	
+    		JSONObject object;
+			try {
+				object = new JSONObject( builder.toString() );
+	        	return "";
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+    		
+        	return "you should not be here";
+        }
+
+        protected void onPostExecute(String msg) {
+        	Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+        	
+        	
+        	if( downloadTask != null ){
+        		downloadTask.abort();
+        	}
+        	downloadTask = null;
+        	downloadTask = new DownloadTagsTask();
+        	downloadTask.execute(location);
+        	
+        	
+        }
+        
+        
+
+		
+        
+    }    
+    
     
     
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -265,8 +346,11 @@ public class TagsMapActivity extends MapActivity {
     	
     	switch(requestCode){
     		case DRAW_INTENT:
-    			String result=data.getStringExtra("result");
-    			Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
+    			
+    			UploadTagTask task = new UploadTagTask( mylocationOverlay.getMyLocation() );
+    			task.execute( new JSONArray() );
+    			
+    			Toast.makeText(this, "Uploading", Toast.LENGTH_SHORT).show();
     			break;
     		default:
     			Toast.makeText(this, "Unknown result", Toast.LENGTH_SHORT).show();
