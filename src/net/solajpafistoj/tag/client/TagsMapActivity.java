@@ -115,7 +115,8 @@ public class TagsMapActivity extends MapActivity {
             //break; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         }
         
-        mapView.getOverlays().add(activeOverlay);
+        //if you try to add overlay that is empty, you will get null exception when you try to touch screen...
+        if(activeOverlay.size() > 0)   mapView.getOverlays().add(activeOverlay);
         
     	
     }
