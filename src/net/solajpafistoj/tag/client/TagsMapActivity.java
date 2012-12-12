@@ -101,7 +101,7 @@ public class TagsMapActivity extends MapActivity {
     	}
         
         //Drawable drawable =new TagDrawable();// this.getResources().getDrawable(R.drawable.androidmarker);
-        activeOverlay = new TagsMapOverlays();
+        activeOverlay = new TagsMapOverlays(this);
         
         
         int count = items.size();

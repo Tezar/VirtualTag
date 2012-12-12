@@ -2,6 +2,7 @@ package net.solajpafistoj.tag.client;
 
 import java.util.ArrayList;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import com.google.android.maps.ItemizedOverlay;
@@ -13,9 +14,11 @@ import com.google.android.maps.OverlayItem;
 
 public class TagsMapOverlays extends ItemizedOverlay {
 	private ArrayList<OverlayItem> mOverlays = new ArrayList<OverlayItem>();
+	private Context mContext;
 	
-	public TagsMapOverlays() {
+	public TagsMapOverlays(Context context) {
 		super(null);
+		mContext = context;
 	}
 
 
