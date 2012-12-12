@@ -55,9 +55,6 @@ class SearchService(webapp2.RequestHandler):
                     MyTagModel.all(),
                     geo.geotypes.Point(lat, lon))
     
-    test = MyTagModel(location=db.GeoPt(lat, lon),
-                          created='Me')
-    test.put() 
     output = [result.toDict() for result in results]
     
     #output = []
