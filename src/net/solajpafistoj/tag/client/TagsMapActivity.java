@@ -276,6 +276,10 @@ public class TagsMapActivity extends MapActivity {
         protected String doInBackground(JSONArray... data) {
         	JSONArray strokes = data[0];
         	
+        	if(location==null){
+        		return "Cannot access your current location. Upload failed.";
+        	}
+        	
         	double lat = location.getLatitudeE6()  * 1E-6;
         	double lon = location.getLongitudeE6()  * 1E-6;
         	StringBuilder builder = new StringBuilder();
