@@ -1,5 +1,7 @@
 package net.solajpafistoj.tag.client;
 
+import java.util.ArrayList;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,7 +27,13 @@ public class TagDrawActivity extends Activity {
             public void onClick(View v) {
             	 Intent returnIntent = new Intent();
             	 returnIntent.putExtra("result","returned text"); // adds String that is sent back to TagMapsActivity
-            	 returnIntent.putExtra("strokes", enableDraw.getListOfPoints().toArray()); // Adds our list of points to TagMapsActivity
+            	
+            	 ArrayList<Float> points = enableDraw.getListOfPoints(); 
+            	 float[] strokes = new float[points.size()]; 
+            	 for (int i = 0; i < strokes.length; i++) { 
+            	      strokes[i] = points.get(i); 
+            	 } 
+            	 returnIntent.putExtra("strokes", strokes);
             	 setResult(RESULT_OK,returnIntent);     
             	 finish();
             }
