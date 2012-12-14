@@ -137,5 +137,10 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
         
 
     }
+    
+    // allows us to get the ArrayList
+    public ArrayList<Point> getListOfPoints() {
+    	return listOfPoints;
+    }
 
 }
