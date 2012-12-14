@@ -24,7 +24,8 @@ public class TagDrawActivity extends Activity {
         b.setOnClickListener(new OnClickListener() {
             public void onClick(View v) {
             	 Intent returnIntent = new Intent();
-            	 returnIntent.putExtra("result","returned text");
+            	 returnIntent.putExtra("result","returned text"); // adds String that is sent back to TagMapsActivity
+            	 returnIntent.putExtra("strokes", enableDraw.getListOfPoints().toArray()); // Adds our list of points to TagMapsActivity
             	 setResult(RESULT_OK,returnIntent);     
             	 finish();
             }

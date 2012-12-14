@@ -358,6 +358,18 @@ public class TagsMapActivity extends MapActivity {
     		case DRAW_INTENT:
     			
     			UploadTagTask task = new UploadTagTask( mylocationOverlay.getMyLocation() );
+
+    			// stroke sent from TagDrawActivity. Also create a JSONArray for server
+    			JSONArray jsonStrokes = new JSONArray(); 
+                float[] strokes = data.getFloatArrayExtra("strokes"); 
+                for (float stroke : strokes) { 
+                    try { 
+                        jsonStrokes.put(stroke); 
+                    } catch (JSONException e) { 
+                    } 
+                } 
+                task.execute(jsonStrokes);
+
     			task.execute( new JSONArray() );
     			
     			Toast.makeText(this, "Uploading", Toast.LENGTH_SHORT).show();
