@@ -370,8 +370,6 @@ public class TagsMapActivity extends MapActivity {
                 } 
                 task.execute(jsonStrokes);
 
-    			task.execute( new JSONArray() );
-    			
     			Toast.makeText(this, "Uploading", Toast.LENGTH_SHORT).show();
     			break;
     		default:
