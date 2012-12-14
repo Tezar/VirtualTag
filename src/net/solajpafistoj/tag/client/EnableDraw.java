@@ -124,12 +124,12 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
 			point.y = me.getY();
             
 			listOfPoints.add(point);
-			listOfPoints.add(point); 
+			listOfPoints.add(point); // adds the point again
 			
 			
         }else if(me.getAction() == MotionEvent.ACTION_UP){
             //path.lineTo(me.getX(), me.getY());
-        	listOfPoints.remove(point);
+        	listOfPoints.remove(listOfPoints.size()-1); // removes the last point
         }
         }       
         return true;
