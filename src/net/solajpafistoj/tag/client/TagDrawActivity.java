@@ -28,12 +28,9 @@ public class TagDrawActivity extends Activity {
             	 Intent returnIntent = new Intent();
             	 returnIntent.putExtra("result","returned text"); // adds String that is sent back to TagMapsActivity
             	
-            	 ArrayList<Float> points = enableDraw.getListOfPoints(); 
-            	 float[] strokes = new float[points.size()]; 
-            	 for (int i = 0; i < strokes.length; i++) { 
-            	      strokes[i] = points.get(i); 
-            	 } 
-            	 returnIntent.putExtra("strokes", strokes);
+            	 StrokesPackager pckg = new StrokesPackager( enableDraw.getStrokes() );
+            	 returnIntent.putExtras( pckg.getBundle() ); 
+            	 
             	 setResult(RESULT_OK,returnIntent);     
             	 finish();
             }

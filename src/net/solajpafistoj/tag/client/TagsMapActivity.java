@@ -293,7 +293,7 @@ public class TagsMapActivity extends MapActivity {
     	
     		try {
     	        // Construct data
-    	        String postData = URLEncoder.encode("strokes", "UTF-8") + "=" + URLEncoder.encode(strokes.toString() , "UTF-8");
+    	        String postData = URLEncoder.encode("strokes", "UTF-8") + "=a";// + URLEncoder.encode(strokes.toString() , "UTF-8");
     	 
     	        // Send data
     	        URL url = new URL("http://virtualtagmap.appspot.com/s?lat="+String.valueOf(lat)+"&lon="+String.valueOf(lon));
@@ -303,8 +303,10 @@ public class TagsMapActivity extends MapActivity {
     	        wr.write(postData);
     	        wr.flush();
     	 
+    	        InputStream is = conn.getInputStream();
+    	        
     	        // Get the response
-    	        BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+    	        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
     	        String line;
     	        while ((line = rd.readLine()) != null) {
     	        	builder.append(line);
@@ -359,15 +361,21 @@ public class TagsMapActivity extends MapActivity {
     			
     			UploadTagTask task = new UploadTagTask( mylocationOverlay.getMyLocation() );
 
-    			// stroke sent from TagDrawActivity. Also create a JSONArray for server
-    			JSONArray jsonStrokes = new JSONArray(); 
-                float[] strokes = data.getFloatArrayExtra("strokes"); 
-                for (float stroke : strokes) { 
-                    try { 
-                        jsonStrokes.put(stroke); 
-                    } catch (JSONException e) { 
-                    } 
-                } 
+    			StrokesPackager pckg = new StrokesPackager( data.getExtras() );
+            	 
+    			ArrayList<ArrayList<Float>> strokes = pckg.getStrokes();
+    			
+    			JSONArray jsonStrokes = new JSONArray();
+    			for(ArrayList<Float> stroke : strokes){
+    				JSONArray jsonStroke = new JSONArray();
+    				
+    				for(Float f : stroke ){
+    					jsonStroke.put(f);
+    				}
+    			 
+    				jsonStrokes.put(jsonStroke);
+    			
+    			}
                 task.execute(jsonStrokes);
 
     			Toast.makeText(this, "Uploading", Toast.LENGTH_SHORT).show();
