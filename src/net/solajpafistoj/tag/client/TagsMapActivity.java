@@ -116,7 +116,7 @@ public class TagsMapActivity extends MapActivity {
         }
         
         //if you try to add overlay that is empty, you will get null exception when you try to touch screen...
-        if(activeOverlay.size() > 0)   mapView.getOverlays().add(activeOverlay);
+        //if(activeOverlay.size() > 0)   mapView.getOverlays().add(activeOverlay);
         
     	
     }
@@ -165,6 +165,11 @@ public class TagsMapActivity extends MapActivity {
         protected ArrayList<TagItem> doInBackground(GeoPoint... points) {
         	GeoPoint point = points[0];
 
+        	if(point == null){
+        		error = true;
+        		return null;
+        	}
+        	
         	//error free
         	error = false;
         	
@@ -353,8 +358,18 @@ public class TagsMapActivity extends MapActivity {
     		case DRAW_INTENT:
     			
     			UploadTagTask task = new UploadTagTask( mylocationOverlay.getMyLocation() );
-    			task.execute( new JSONArray() );
-    			
+
+    			// stroke sent from TagDrawActivity. Also create a JSONArray for server
+    			JSONArray jsonStrokes = new JSONArray(); 
+                float[] strokes = data.getFloatArrayExtra("strokes"); 
+                for (float stroke : strokes) { 
+                    try { 
+                        jsonStrokes.put(stroke); 
+                    } catch (JSONException e) { 
+                    } 
+                } 
+                task.execute(jsonStrokes);
+
     			Toast.makeText(this, "Uploading", Toast.LENGTH_SHORT).show();
     			break;
     		default:

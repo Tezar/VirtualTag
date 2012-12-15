@@ -3,34 +3,30 @@ package net.solajpafistoj.tag.client;
 
 import java.util.ArrayList;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.os.Bundle;
-import android.support.v4.view.ViewPager.LayoutParams;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.View.OnTouchListener;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.FrameLayout;
-import android.util.AttributeSet;
 
 public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable {
    private ArrayList<Path> pointsToDraw = new ArrayList<Path>();
-    private Paint mPaint;
-    Path path;
+   private ArrayList<Float> listOfPoints = new ArrayList<Float>();
+   private Paint mPaint;
+   Path path;
 
+    
     public EnableDraw(Context context, AttributeSet attrs) {
         // ODO Auto-generated method stub
     	super(context, attrs);
     	mPaint = new Paint();
-        mPaint.setDither(true);
+        mPaint.setDither(true); // decieves the human eye
         mPaint.setColor(Color.RED);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
@@ -114,15 +110,37 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
             path = new Path();
             path.moveTo(me.getX(), me.getY());
             //path.lineTo(me.getX(), me.getY());
+            
             pointsToDraw.add(path);
+            listOfPoints.add(me.getX());
+            listOfPoints.add(me.getY());
+            
         }else if(me.getAction() == MotionEvent.ACTION_MOVE){
             path.lineTo(me.getX(), me.getY());
-        }else if(me.getAction() == MotionEvent.ACTION_UP){
-            //path.lineTo(me.getX(), me.getY());
-        }
+            
+			listOfPoints.add(me.getX());
+            listOfPoints.add(me.getY());
+            
+            listOfPoints.add(me.getX()); // adds the X and Y a second time
+            listOfPoints.add(me.getY());
+            
+			
+        }else if(me.getAction() == MotionEvent.ACTION_UP){ 
+            if (listOfPoints.size() > 1) { 
+                listOfPoints.remove(listOfPoints.size()-1); // removes last point
+                listOfPoints.remove(listOfPoints.size()-1);
+            	}
+        	}
         }       
         return true;
+        
+        
 
+    }
+    
+    // allows us to get the ArrayList
+    public ArrayList<Float> getListOfPoints() {
+    	return listOfPoints;
     }
 
 }
