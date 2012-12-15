@@ -2,6 +2,9 @@ package net.solajpafistoj.tag.client;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+
 import android.os.Bundle;
 
 //convenient (un)packer for sending strokes thru Intents
@@ -38,9 +41,41 @@ public class StrokesPackager extends Object{
 		}
 	}
 	
+	public StrokesPackager(String data){
+		try {
+			JSONArray content = new JSONArray( data );	
+			
+			int count = content.length();
+			
+			strokes = new ArrayList<ArrayList<Float>>();
+			
+			for (int i = 0; i < count; i++){
+					ArrayList<Float> stroke = new ArrayList<Float>();
+					
+					JSONArray dataStroke = content.getJSONArray(i);
+					
+					int pointCount = dataStroke.length();
+					
+					for(int g = 0; g < pointCount ; g++){
+							stroke.add( (float) dataStroke.getInt(g) );
+					}
+					
+					strokes.add(stroke);
+			}
+		
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}			
+	}
+    
+	
 	public  StrokesPackager(ArrayList<ArrayList<Float>> lines){
 		strokes = lines;
 	}
+	
+	
+	
 	
 	public ArrayList<ArrayList<Float>> getStrokes(){
 		assert(strokes != null);
