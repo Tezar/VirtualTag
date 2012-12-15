@@ -8,31 +8,29 @@ import android.os.Bundle;
 
 public class StrokesPackager extends Object{
 	
-	protected ArrayList<ArrayList<Point>> strokes = null;
+	protected ArrayList<ArrayList<Float>> strokes = null;
 
 	public static final String STROKE_COUNT = "StrokesPackager.STROKE_COUNT";
 	public static final String STROKE_STORAGE = "StrokesPackager.STROKE_STORAGE";
 	
-	public void StrokesPackager(Bundle bundle){
+
+	public StrokesPackager(Bundle bundle){
 		assert(bundle != null);
 		int count = bundle.getInt(STROKE_COUNT, 0);
 		 
-		strokes = new ArrayList<ArrayList<Point>>();
+		strokes = new ArrayList<ArrayList<Float>>();
 		
 		for (int i = 0; i < count; i++){
-			ArrayList<Point> stroke = new ArrayList<Point>();
+			ArrayList<Float> stroke = new ArrayList<Float>();
 			
 			float[] points = bundle.getFloatArray(STROKE_STORAGE + i);
 			
-			assert( (points.length % 2) == 0);	//aray must have even number
+			//assert( (points.length % 2) == 0);	//array must have even number
 			
 			int pointCount = points.length/2;
 			
 			for(int g = 0; g < pointCount ; g++){
-				Point p = new Point(0,0);
-				p.x = points[g];
-				p.y = points[g+1];
-				stroke.add(p);
+				stroke.add( points[g] );
 			}
 			
 			strokes.add(stroke);
@@ -40,11 +38,11 @@ public class StrokesPackager extends Object{
 		}
 	}
 	
-	public void StrokesPackager(ArrayList<ArrayList<Point>> lines){
+	public  StrokesPackager(ArrayList<ArrayList<Float>> lines){
 		strokes = lines;
 	}
 	
-	public ArrayList<ArrayList<Point>> getList(){
+	public ArrayList<ArrayList<Float>> getStrokes(){
 		assert(strokes != null);
 		return strokes;
 	}
@@ -60,18 +58,17 @@ public class StrokesPackager extends Object{
         bundle.putInt(STROKE_COUNT, count);
 
         for (int i = 0; i < count; i++){
-        	ArrayList<Point> stroke = strokes.get(i);
+        	ArrayList<Float> stroke = strokes.get(i);
         	int pointCount = stroke.size();
         	 
-        	float[] flattened = new float[ pointCount*2 ];
+        	float[] flattened = new float[ pointCount ];
         	
         	int g=0;
-        	for (Point p:  strokes.get(i) ){
-        		flattened[g++] = p.x;
-        		flattened[g++] = p.y;
+        	for (Float f:  strokes.get(i) ){
+        		flattened[g++] = f;
 			}	
         	
-        	bundle.putFloatArray(STROKE_STORAGE + i , flattened );
+        	bundle.putFloatArray(STROKE_STORAGE + i ,  flattened );
         }
 
 		return bundle;
