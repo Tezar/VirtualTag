@@ -17,7 +17,8 @@ import android.view.View.OnTouchListener;
 
 public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable {
    private ArrayList<Path> pointsToDraw = new ArrayList<Path>();
-   private ArrayList<Float> listOfPoints = new ArrayList<Float>();
+   private ArrayList<Float> listOfPoints;
+   private ArrayList<ArrayList<Float>> strokes = new ArrayList<ArrayList<Float>>();
    private Paint mPaint;
    Path path;
 
@@ -48,7 +49,7 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
 
         
 
-        @Override
+        //@Override
         public void run() {
             // TODO Auto-generated method stub
             while( isItOk == true){
@@ -101,17 +102,20 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
     
 
 
-    @Override
+    //@Override
     public boolean onTouch(View v, MotionEvent me) {
         // TODO Auto-generated method stub
                 synchronized(pointsToDraw)
                 {
         if(me.getAction() == MotionEvent.ACTION_DOWN){
             path = new Path();
-            path.moveTo(me.getX(), me.getY());
-            //path.lineTo(me.getX(), me.getY());
-            
             pointsToDraw.add(path);
+            
+            path.moveTo(me.getX(), me.getY());
+            
+            listOfPoints = new ArrayList<Float>();
+            strokes.add(listOfPoints);
+            
             listOfPoints.add(me.getX());
             listOfPoints.add(me.getY());
             
@@ -121,17 +125,9 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
 			listOfPoints.add(me.getX());
             listOfPoints.add(me.getY());
             
-            listOfPoints.add(me.getX()); // adds the X and Y a second time
-            listOfPoints.add(me.getY());
-            
-			
         }else if(me.getAction() == MotionEvent.ACTION_UP){ 
-            if (listOfPoints.size() > 1) { 
-                listOfPoints.remove(listOfPoints.size()-1); // removes last point
-                listOfPoints.remove(listOfPoints.size()-1);
-            	}
-        	}
         }       
+                }//end sync
         return true;
         
         
@@ -139,8 +135,8 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
     }
     
     // allows us to get the ArrayList
-    public ArrayList<Float> getListOfPoints() {
-    	return listOfPoints;
+    public ArrayList<ArrayList<Float>> getStrokes() {
+    	return strokes;
     }
 
 }
