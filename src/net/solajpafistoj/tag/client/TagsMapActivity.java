@@ -10,15 +10,20 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
 import org.apache.http.StatusLine;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -286,6 +291,7 @@ public class TagsMapActivity extends MapActivity {
     	
         protected String doInBackground(JSONArray... data) {
         	JSONArray strokes = data[0];
+        	String txtResponse = null;
         	
         	if(location==null){
         		return "Cannot access your current location. Upload failed.";
@@ -293,43 +299,37 @@ public class TagsMapActivity extends MapActivity {
         	
         	double lat = location.getLatitudeE6()  * 1E-6;
         	double lon = location.getLongitudeE6()  * 1E-6;
-        	StringBuilder builder = new StringBuilder();
-        	
-    	
+        
     		try {
-    	        // Construct data
-    	        String postData = URLEncoder.encode("strokes", "UTF-8") + "=" + URLEncoder.encode(strokes.toString() , "UTF-8");
-    	 
-    	        // Send data
-    	        URL url = new URL("http://virtualtagmap.appspot.com/s?lat="+String.valueOf(lat)+"&lon="+String.valueOf(lon));
-    	        URLConnection conn = url.openConnection();
-    	        conn.setDoOutput(true);
-    	        OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-    	        wr.write(postData);
-    	        wr.flush();
-    	 
-    	        InputStream is = conn.getInputStream();
-    	        
-    	        // Get the response
-    	        BufferedReader rd = new BufferedReader(new InputStreamReader(is));
-    	        String line;
-    	        while ((line = rd.readLine()) != null) {
-    	        	builder.append(line);
-    	        }
-    	        wr.close();
-    	        rd.close();
+    			
+    			HttpClient httpclient = new DefaultHttpClient();
+    			HttpPost httppost = new HttpPost("http://virtualtagmap.appspot.com/s?lat="+URLEncoder.encode(String.valueOf(lat), "UTF-8")+"&lon="+URLEncoder.encode(String.valueOf(lon), "UTF-8") );
+
+    		
+		        // Add your data
+		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
+		        nameValuePairs.add(new BasicNameValuePair("strokes", strokes.toString() ));
+		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+
+		        // Execute HTTP Post Request
+		        HttpResponse response = httpclient.execute(httppost);
+		        
+		        txtResponse = EntityUtils.toString(response.getEntity());
+
     	    } catch (Exception e) {
     	    	e.printStackTrace();
     	    }
     	
     		JSONObject object;
-			try {
-				object = new JSONObject( builder.toString() );
-	        	return object.getString("result") ;
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+    		if(txtResponse != null){
+				try {
+					object = new JSONObject( txtResponse );
+		        	return object.getString("result") ;
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+    		}
     		
         	return "you should not be here";
         }
