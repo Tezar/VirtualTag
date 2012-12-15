@@ -14,4 +14,5 @@ class MyTagModel(geo.geomodel.GeoModel):
     prop = {}
     prop["id"]= self.key().id()
     prop["loc"] = [self.location.lat,self.location.lon]
+    prop["content"] = self.content
     return prop 
