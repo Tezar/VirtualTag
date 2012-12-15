@@ -3,8 +3,10 @@ package net.solajpafistoj.tag.client;
 import java.util.ArrayList;
 
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
@@ -17,14 +19,57 @@ import android.graphics.drawable.Drawable;
 public class TagDrawable extends Drawable {
 
 	    private final Paint mPaint;
+	    private final Paint mPathPaint;
 	    private final RectF mRect;
-	    protected boolean firstDraw =true;
 	    
-	    public TagDrawable()
+	    protected ArrayList<ArrayList<Float>> strokes;
+	    
+	    private ArrayList<Path> pointsToDraw = new ArrayList<Path>();
+	    
+	    
+	    public TagDrawable(ArrayList<ArrayList<Float>> strokes)
 	    {
-	        mPaint = new Paint();
+	    	super();
+	    	
+	    	mPaint = new Paint();
+	    	mPathPaint = new Paint();
 	        mRect = new RectF();
 	        mPaint.setStrokeWidth(3);
+	        
+	        
+	        mPathPaint.setColor(Color.RED);
+	        mPathPaint.setStyle(Paint.Style.STROKE);
+	        mPathPaint.setStrokeJoin(Paint.Join.ROUND);
+	        mPathPaint.setStrokeCap(Paint.Cap.ROUND);
+	        mPathPaint.setStrokeWidth(2);
+	        
+	        if(strokes != null){
+
+		        float conversionWidth = getIntrinsicWidth()/480.0f;
+		        float conversionHeight = getIntrinsicHeight()/640.0f;
+		        
+		        //convert list to paths
+		        for(ArrayList<Float> stroke : strokes){
+		        	//just to be sure we by point, because there could be record with even number and taht could cause crash :-/
+		        	int countPoint = (int) Math.floor(stroke.size() / 2 );
+		        	
+		        	Path path = new Path();
+		        	pointsToDraw.add(path);
+		        	
+		        	
+		        	
+		        	path.moveTo(stroke.get(0)*conversionWidth, stroke.get(1)*conversionHeight);
+		        	
+		        	for(int g=1; g<countPoint;){
+		        		float pX = stroke.get(g*2)*conversionWidth;
+		        		float pY =  stroke.get(g*2+1)*conversionHeight;
+		        		path.lineTo(pX, pY);
+		        		g++;
+		        	}
+		        }
+	        }
+	        
+	        
 	    }
 
 	    @Override
@@ -34,11 +79,18 @@ public class TagDrawable extends Drawable {
 	    	mPaint.setARGB(255, 255, 255, 255);
 	        mPaint.setStyle(Style.FILL);
 	        canvas.drawRoundRect(bounds, 10f, 10f, mPaint);
+	        
+	        
+	        
+            for (Path path : pointsToDraw) {
+                canvas.drawPath(path, mPathPaint);
+            }
+	        
+	        
+	        
 	        mPaint.setARGB(127, 0, 0, 0);
 	        mPaint.setStyle(Style.STROKE);
 	        canvas.drawRoundRect(bounds, 10f, 10f, mPaint);
-	        
-
 	        
 	        /*
 	         *  0,0 -----------> X
@@ -54,13 +106,13 @@ public class TagDrawable extends Drawable {
 	    @Override
 	    public int getIntrinsicHeight()
 	    {
-	    	return 30;
+	    	return 4*30;
 	    }
 	    
 	    @Override
 	    public int getIntrinsicWidth()
 	    {
-	    	return 50;
+	    	return 3*30;
 	    }	    
 	    
 
