@@ -106,9 +106,12 @@ public class TagsMapActivity extends MapActivity {
         
         int count = items.size();
         for (int i = 0; i < count; i++) {
-            OverlayItem overlayitem = new OverlayItem(items.get(i).location, null, null);
-            Drawable marker = new TagDrawable();
+        	TagItem item = items.get(i);
+            OverlayItem overlayitem = new OverlayItem(item.location, null, null);
+            Drawable marker = new TagDrawable( item.strokes );
             marker.setBounds(0, 0, marker .getIntrinsicWidth(), marker .getIntrinsicHeight());
+
+            
             overlayitem.setMarker( marker );
             
             activeOverlay.addOverlay(overlayitem);
@@ -116,7 +119,7 @@ public class TagsMapActivity extends MapActivity {
         }
         
         //if you try to add overlay that is empty, you will get null exception when you try to touch screen...
-        //if(activeOverlay.size() > 0)   mapView.getOverlays().add(activeOverlay);
+        if(activeOverlay.size() > 0)   mapView.getOverlays().add(activeOverlay);
         
     	
     }
@@ -200,8 +203,10 @@ public class TagsMapActivity extends MapActivity {
         	        TagItem item = new TagItem();
         	        
         	        JSONArray location = jsonObject.getJSONArray("loc");
+        	        StrokesPackager pckg = new StrokesPackager(  jsonObject.getString("content") );  
         	        
         	        item.location = new GeoPoint( (int)Math.round(location.getDouble(0) * 1E6) , (int)Math.round(location.getDouble(1) * 1E6) );
+        	        item.strokes = pckg.getStrokes();
         	        items.add(item);
         	      }
         	    } catch (Exception e) {
@@ -293,7 +298,7 @@ public class TagsMapActivity extends MapActivity {
     	
     		try {
     	        // Construct data
-    	        String postData = URLEncoder.encode("strokes", "UTF-8") + "=a";// + URLEncoder.encode(strokes.toString() , "UTF-8");
+    	        String postData = URLEncoder.encode("strokes", "UTF-8") + "=" + URLEncoder.encode(strokes.toString() , "UTF-8");
     	 
     	        // Send data
     	        URL url = new URL("http://virtualtagmap.appspot.com/s?lat="+String.valueOf(lat)+"&lon="+String.valueOf(lon));
@@ -320,7 +325,7 @@ public class TagsMapActivity extends MapActivity {
     		JSONObject object;
 			try {
 				object = new JSONObject( builder.toString() );
-	        	return "";
+	        	return object.getString("result") ;
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
