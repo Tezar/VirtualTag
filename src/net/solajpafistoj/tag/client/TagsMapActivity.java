@@ -92,6 +92,10 @@ public class TagsMapActivity extends MapActivity {
         									}
         								});
         
+        //automatically load the first view
+    	downloadTask = new DownloadTagsTask();
+    	downloadTask.execute( mapView.getMapCenter() );
+        
         
     }
 
