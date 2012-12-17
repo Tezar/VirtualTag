@@ -46,7 +46,7 @@ public class TagDrawable extends Drawable {
 	        if(strokes != null){
 
 		        float conversionWidth = getIntrinsicWidth()/480.0f;
-		        float conversionHeight = getIntrinsicHeight()/640.0f;
+		        float conversionHeight = getIntrinsicHeight()/780.0f;
 		        
 		        //convert list to paths
 		        for(ArrayList<Integer> stroke : strokes){
@@ -76,7 +76,7 @@ public class TagDrawable extends Drawable {
 	    public void draw(Canvas canvas)
 	    {
 	    	RectF bounds = new RectF(this.getBounds());
-	    	mPaint.setARGB(255, 255, 255, 255);
+	    	mPaint.setARGB(255, 50, 50, 50);
 	        mPaint.setStyle(Style.FILL);
 	        canvas.drawRoundRect(bounds, 10f, 10f, mPaint);
 	        
