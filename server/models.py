@@ -7,7 +7,7 @@ import json
 
 class MyTagModel(geo.geomodel.GeoModel):
   created = db.StringProperty()
-  content = db.StringProperty(multiline=True)
+  content = db.TextProperty()
   date = db.DateTimeProperty(auto_now_add=True)
   
   def toDict(self):
