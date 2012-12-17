@@ -368,13 +368,13 @@ public class TagsMapActivity extends MapActivity {
 
     			StrokesPackager pckg = new StrokesPackager( data.getExtras() );
             	 
-    			ArrayList<ArrayList<Float>> strokes = pckg.getStrokes();
+    			ArrayList<ArrayList<Integer>> strokes = pckg.getStrokes();
     			
     			JSONArray jsonStrokes = new JSONArray();
-    			for(ArrayList<Float> stroke : strokes){
+    			for(ArrayList<Integer> stroke : strokes){
     				JSONArray jsonStroke = new JSONArray();
     				
-    				for(Float f : stroke ){
+    				for(Integer f : stroke ){
     					jsonStroke.put(f);
     				}
     			 

@@ -27,7 +27,7 @@ public class TagDrawable extends Drawable {
 	    private ArrayList<Path> pointsToDraw = new ArrayList<Path>();
 	    
 	    
-	    public TagDrawable(ArrayList<ArrayList<Float>> strokes)
+	    public TagDrawable(ArrayList<ArrayList<Integer>> strokes)
 	    {
 	    	super();
 	    	
@@ -49,7 +49,7 @@ public class TagDrawable extends Drawable {
 		        float conversionHeight = getIntrinsicHeight()/640.0f;
 		        
 		        //convert list to paths
-		        for(ArrayList<Float> stroke : strokes){
+		        for(ArrayList<Integer> stroke : strokes){
 		        	//just to be sure we by point, because there could be record with even number and taht could cause crash :-/
 		        	int countPoint = (int) Math.floor(stroke.size() / 2 );
 		        	

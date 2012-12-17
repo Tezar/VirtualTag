@@ -17,8 +17,8 @@ import android.view.View.OnTouchListener;
 
 public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable {
    private ArrayList<Path> pointsToDraw = new ArrayList<Path>();
-   private ArrayList<Float> listOfPoints;
-   private ArrayList<ArrayList<Float>> strokes = new ArrayList<ArrayList<Float>>();
+   private ArrayList<Integer> listOfPoints;
+   private ArrayList<ArrayList<Integer>> strokes = new ArrayList<ArrayList<Integer>>();
    private Paint mPaint;
    Path path;
 
@@ -113,17 +113,17 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
             
             path.moveTo(me.getX(), me.getY());
             
-            listOfPoints = new ArrayList<Float>();
+            listOfPoints = new ArrayList<Integer>();
             strokes.add(listOfPoints);
             
-            listOfPoints.add(me.getX());
-            listOfPoints.add(me.getY());
+            listOfPoints.add( Math.round(me.getX()) );
+            listOfPoints.add( Math.round(me.getY()) );
             
         }else if(me.getAction() == MotionEvent.ACTION_MOVE){
             path.lineTo(me.getX(), me.getY());
             
-			listOfPoints.add(me.getX());
-            listOfPoints.add(me.getY());
+			listOfPoints.add( Math.round(me.getX()) );
+            listOfPoints.add( Math.round(me.getY()) );
             
         }else if(me.getAction() == MotionEvent.ACTION_UP){ 
         }       
@@ -135,7 +135,7 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
     }
     
     // allows us to get the ArrayList
-    public ArrayList<ArrayList<Float>> getStrokes() {
+    public ArrayList<ArrayList<Integer>> getStrokes() {
     	return strokes;
     }
 

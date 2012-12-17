@@ -6,5 +6,5 @@ import com.google.android.maps.GeoPoint;
 
 public class TagItem {
 	public GeoPoint location;
-	public ArrayList<ArrayList<Float>> strokes;
+	public ArrayList<ArrayList<Integer>> strokes;
 }

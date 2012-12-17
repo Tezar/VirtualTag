@@ -11,7 +11,7 @@ import android.os.Bundle;
 
 public class StrokesPackager extends Object{
 	
-	protected ArrayList<ArrayList<Float>> strokes = null;
+	protected ArrayList<ArrayList<Integer>> strokes = null;
 
 	public static final String STROKE_COUNT = "StrokesPackager.STROKE_COUNT";
 	public static final String STROKE_STORAGE = "StrokesPackager.STROKE_STORAGE";
@@ -21,12 +21,12 @@ public class StrokesPackager extends Object{
 		assert(bundle != null);
 		int count = bundle.getInt(STROKE_COUNT, 0);
 		 
-		strokes = new ArrayList<ArrayList<Float>>();
+		strokes = new ArrayList<ArrayList<Integer>>();
 		
 		for (int i = 0; i < count; i++){
-			ArrayList<Float> stroke = new ArrayList<Float>();
+			ArrayList<Integer> stroke = new ArrayList<Integer>();
 			
-			float[] points = bundle.getFloatArray(STROKE_STORAGE + i);
+			int[] points = bundle.getIntArray(STROKE_STORAGE + i);
 			
 			//assert( (points.length % 2) == 0);	//array must have even number
 			
@@ -47,17 +47,17 @@ public class StrokesPackager extends Object{
 			
 			int count = content.length();
 			
-			strokes = new ArrayList<ArrayList<Float>>();
+			strokes = new ArrayList<ArrayList<Integer>>();
 			
 			for (int i = 0; i < count; i++){
-					ArrayList<Float> stroke = new ArrayList<Float>();
+					ArrayList<Integer> stroke = new ArrayList<Integer>();
 					
 					JSONArray dataStroke = content.getJSONArray(i);
 					
 					int pointCount = dataStroke.length();
 					
 					for(int g = 0; g < pointCount ; g++){
-							stroke.add( (float) dataStroke.getInt(g) );
+							stroke.add( dataStroke.getInt(g) );
 					}
 					
 					strokes.add(stroke);
@@ -70,14 +70,14 @@ public class StrokesPackager extends Object{
 	}
     
 	
-	public  StrokesPackager(ArrayList<ArrayList<Float>> lines){
+	public  StrokesPackager(ArrayList<ArrayList<Integer>> lines){
 		strokes = lines;
 	}
 	
 	
 	
 	
-	public ArrayList<ArrayList<Float>> getStrokes(){
+	public ArrayList<ArrayList<Integer>> getStrokes(){
 		assert(strokes != null);
 		return strokes;
 	}
@@ -93,17 +93,17 @@ public class StrokesPackager extends Object{
         bundle.putInt(STROKE_COUNT, count);
 
         for (int i = 0; i < count; i++){
-        	ArrayList<Float> stroke = strokes.get(i);
+        	ArrayList<Integer> stroke = strokes.get(i);
         	int pointCount = stroke.size();
         	 
-        	float[] flattened = new float[ pointCount ];
+        	int[] flattened = new int[ pointCount ];
         	
         	int g=0;
-        	for (Float f:  strokes.get(i) ){
+        	for (Integer f:  strokes.get(i) ){
         		flattened[g++] = f;
 			}	
         	
-        	bundle.putFloatArray(STROKE_STORAGE + i ,  flattened );
+        	bundle.putIntArray(STROKE_STORAGE + i ,  flattened );
         }
 
 		return bundle;
