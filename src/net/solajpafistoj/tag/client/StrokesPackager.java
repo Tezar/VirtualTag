@@ -28,9 +28,9 @@ public class StrokesPackager extends Object{
 			
 			int[] points = bundle.getIntArray(STROKE_STORAGE + i);
 			
-			//assert( (points.length % 2) == 0);	//array must have even number
+			//points are stored in flat array, each coordinates as two subsequent items
 			
-			int pointCount = points.length/2;
+			int pointCount = points.length;
 			
 			for(int g = 0; g < pointCount ; g++){
 				stroke.add( points[g] );
