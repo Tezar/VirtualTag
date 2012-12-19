@@ -33,9 +33,14 @@ public class TagDrawable extends Drawable {
 	    	super();
 	    	
 	    	mPaint = new Paint();
-	    	strokePaint = new Paint();
 	    	mRect = new RectF();
 	        mPaint.setStrokeWidth(3);
+
+	    	strokePaint = new Paint();
+	    	strokePaint.setStyle(Paint.Style.STROKE);
+	    	strokePaint.setStrokeJoin(Paint.Join.ROUND);
+	    	strokePaint.setStrokeCap(Paint.Cap.ROUND);
+	    	strokePaint.setStrokeWidth(3);
 	        
 
 	        if(pck != null){
