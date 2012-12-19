@@ -19,31 +19,27 @@ import android.graphics.drawable.Drawable;
 public class TagDrawable extends Drawable {
 
 	    private final Paint mPaint;
-	    private final Paint mPathPaint;
+	    private final Paint strokePaint;
 	    private final RectF mRect;
 	    
 	    protected ArrayList<ArrayList<Float>> strokes;
 	    
 	    private ArrayList<Path> pointsToDraw = new ArrayList<Path>();
+	    private ArrayList<Integer> colors = new ArrayList<Integer>();
 	    
 	    
-	    public TagDrawable(ArrayList<ArrayList<Integer>> strokes)
+	    public TagDrawable(StrokesPackager pck)
 	    {
 	    	super();
 	    	
 	    	mPaint = new Paint();
-	    	mPathPaint = new Paint();
-	        mRect = new RectF();
+	    	strokePaint = new Paint();
+	    	mRect = new RectF();
 	        mPaint.setStrokeWidth(3);
 	        
-	        
-	        mPathPaint.setColor(Color.RED);
-	        mPathPaint.setStyle(Paint.Style.STROKE);
-	        mPathPaint.setStrokeJoin(Paint.Join.ROUND);
-	        mPathPaint.setStrokeCap(Paint.Cap.ROUND);
-	        mPathPaint.setStrokeWidth(2);
-	        
-	        if(strokes != null){
+
+	        if(pck != null){
+	        	ArrayList<ArrayList<Integer>> strokes = pck.getStrokes();
 
 		        float conversionWidth = getIntrinsicWidth()/480.0f;
 		        float conversionHeight = getIntrinsicHeight()/780.0f;
@@ -52,11 +48,9 @@ public class TagDrawable extends Drawable {
 		        for(ArrayList<Integer> stroke : strokes){
 		        	//just to be sure we by point, because there could be record with even number and taht could cause crash :-/
 		        	int countPoint = (int) Math.floor(stroke.size() / 2 );
-		        	
+
 		        	Path path = new Path();
 		        	pointsToDraw.add(path);
-		        	
-		        	
 		        	
 		        	path.moveTo(stroke.get(0)*conversionWidth, stroke.get(1)*conversionHeight);
 		        	
@@ -67,6 +61,9 @@ public class TagDrawable extends Drawable {
 		        		g++;
 		        	}
 		        }
+		        
+		        
+		        colors = pck.getColors();
 	        }
 	        
 	        
@@ -80,13 +77,11 @@ public class TagDrawable extends Drawable {
 	        mPaint.setStyle(Style.FILL);
 	        canvas.drawRoundRect(bounds, 10f, 10f, mPaint);
 	        
-	        
-	        
-            for (Path path : pointsToDraw) {
-                canvas.drawPath(path, mPathPaint);
-            }
-	        
-	        
+	        int count =  pointsToDraw.size();
+	        for (int i = 0; i < count; i++) {
+	        	strokePaint.setColor(colors.get(i));
+	        	canvas.drawPath(pointsToDraw.get(i), strokePaint);;
+			}
 	        
 	        mPaint.setARGB(127, 0, 0, 0);
 	        mPaint.setStyle(Style.STROKE);

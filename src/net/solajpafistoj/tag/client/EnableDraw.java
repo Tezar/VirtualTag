@@ -19,8 +19,12 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
    private ArrayList<Path> pointsToDraw = new ArrayList<Path>();
    private ArrayList<Integer> listOfPoints;
    private ArrayList<ArrayList<Integer>> strokes = new ArrayList<ArrayList<Integer>>();
+   private ArrayList<Integer> colors = new ArrayList<Integer>();
+   
    private Paint mPaint;
    Path path;
+   
+   int currentPaint;
 
     
     public EnableDraw(Context context, AttributeSet attrs) {
@@ -28,7 +32,10 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
     	super(context, attrs);
     	mPaint = new Paint();
         mPaint.setDither(true); // decieves the human eye
-        mPaint.setColor(Color.RED);
+        
+        float[] hsv = {(float) (Math.random()*360),1.f,1.f};
+        currentPaint = Color.HSVToColor(hsv);
+        mPaint.setColor(currentPaint);
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
@@ -37,10 +44,6 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
         holder = getHolder();
         setOnTouchListener(this);
     }
-
-
-
-
 
 
         Thread t = null;
@@ -71,9 +74,12 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
             super.onDraw(canvas);
                         synchronized(pointsToDraw)
                         {
-            for (Path path : pointsToDraw) {
-                canvas.drawPath(path, mPaint);
-            }
+                        	int count = pointsToDraw.size();
+                        	
+                        	for (int i = 0; i < count; i++) {
+                        		mPaint.setColor(colors.get(i));
+                        		canvas.drawPath(pointsToDraw.get(i), mPaint);
+							}
                         }
         }
 
@@ -108,7 +114,9 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
                 synchronized(pointsToDraw)
                 {
         if(me.getAction() == MotionEvent.ACTION_DOWN){
-            path = new Path();
+            colors.add(currentPaint);
+        	
+        	path = new Path();
             pointsToDraw.add(path);
             
             path.moveTo(me.getX(), me.getY());
@@ -138,5 +146,9 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
     public ArrayList<ArrayList<Integer>> getStrokes() {
     	return strokes;
     }
+
+	public ArrayList<Integer> getColors() {
+		return colors;
+	}
 
 }

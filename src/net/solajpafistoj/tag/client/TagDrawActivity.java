@@ -28,7 +28,7 @@ public class TagDrawActivity extends Activity {
             	 Intent returnIntent = new Intent();
             	 returnIntent.putExtra("result","returned text"); // adds String that is sent back to TagMapsActivity
             	
-            	 StrokesPackager pckg = new StrokesPackager( enableDraw.getStrokes() );
+            	 StrokesPackager pckg = new StrokesPackager( enableDraw.getStrokes(), enableDraw.getColors()  );
             	 returnIntent.putExtras( pckg.getBundle() ); 
             	 
             	 setResult(RESULT_OK,returnIntent);     

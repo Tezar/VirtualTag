@@ -117,7 +117,7 @@ public class TagsMapActivity extends MapActivity {
         for (int i = 0; i < count; i++) {
         	TagItem item = items.get(i);
             OverlayItem overlayitem = new OverlayItem(item.location, null, null);
-            Drawable marker = new TagDrawable( item.strokes );
+            Drawable marker = new TagDrawable( item.pck );
             marker.setBounds(0, 0, marker .getIntrinsicWidth(), marker .getIntrinsicHeight());
 
             
@@ -215,7 +215,7 @@ public class TagsMapActivity extends MapActivity {
         	        StrokesPackager pckg = new StrokesPackager(  jsonObject.getString("content") );  
         	        
         	        item.location = new GeoPoint( (int)Math.round(location.getDouble(0) * 1E6) , (int)Math.round(location.getDouble(1) * 1E6) );
-        	        item.strokes = pckg.getStrokes();
+        	        item.pck = pckg;
         	        items.add(item);
         	      }
         	    } catch (Exception e) {
@@ -294,7 +294,7 @@ public class TagsMapActivity extends MapActivity {
 
     	
         protected String doInBackground(JSONArray... data) {
-        	JSONArray strokes = data[0];
+        	JSONArray combined = data[0];
         	String txtResponse = null;
         	
         	if(location==null){
@@ -312,7 +312,7 @@ public class TagsMapActivity extends MapActivity {
     		
 		        // Add your data
 		        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>(1);
-		        nameValuePairs.add(new BasicNameValuePair("strokes", strokes.toString() ));
+		        nameValuePairs.add(new BasicNameValuePair("strokes", combined.toString() ));
 		        httppost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
 
 		        // Execute HTTP Post Request
@@ -373,19 +373,28 @@ public class TagsMapActivity extends MapActivity {
     			StrokesPackager pckg = new StrokesPackager( data.getExtras() );
             	 
     			ArrayList<ArrayList<Integer>> strokes = pckg.getStrokes();
+    			ArrayList<Integer> colors = pckg.getColors();
     			
-    			JSONArray jsonStrokes = new JSONArray();
-    			for(ArrayList<Integer> stroke : strokes){
+    			JSONArray jsonCombined = new JSONArray();
+    			int count = strokes.size();
+    			
+    			for (int i = 0; i < count; i++) {
     				JSONArray jsonStroke = new JSONArray();
+    				ArrayList<Integer> stroke = strokes.get(i);
+    				
+    				
+    				jsonStroke.put( colors.get(i));
     				
     				for(Integer f : stroke ){
     					jsonStroke.put(f);
     				}
     			 
-    				jsonStrokes.put(jsonStroke);
-    			
-    			}
-                task.execute(jsonStrokes);
+    				jsonCombined.put(jsonStroke);
+    				
+				}
+
+    				
+                task.execute(jsonCombined);
 
     			Toast.makeText(this, "Uploading", Toast.LENGTH_SHORT).show();
     			break;
