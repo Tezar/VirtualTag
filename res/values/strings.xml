@@ -4,6 +4,7 @@
     <string name="app_name">VirtualTag</string>
     <string name="hello_world">Hello world!</string>
     <string name="menu_settings">Add tag on my location</string>
+    <string name="menu_delete">Delete tag on my location</string>
     <string name="title_activity_map">Map</string>
     <string name="title_tag_draw">Draw tag</string>
     <string name="title_activity_splash">SplashActivity</string>

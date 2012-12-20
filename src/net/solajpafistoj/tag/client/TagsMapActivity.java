@@ -421,8 +421,13 @@ public class TagsMapActivity extends MapActivity {
 	        	startActivityForResult(i, DRAW_INTENT);
 	        	
 	        return true;
+	        
+	        case R.id.menu_delete:
+	        	
 	        default:
 	        	return super.onOptionsItemSelected(item);
+	        	
+	     
     	}
     }
     
