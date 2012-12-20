@@ -33,7 +33,7 @@ public class EnableDraw extends SurfaceView implements OnTouchListener, Runnable
     	mPaint = new Paint();
         mPaint.setDither(true); // decieves the human eye
         
-        float[] hsv = {(float) ((System.currentTimeMillis() / 1000f)%360),1.f, 1.f};
+        float[] hsv = {(float) ((System.currentTimeMillis() / 1000f)%(3600*6))/60.f,1.f, 1.f};
         
         currentPaint = Color.HSVToColor(hsv);
         mPaint.setColor(currentPaint);
