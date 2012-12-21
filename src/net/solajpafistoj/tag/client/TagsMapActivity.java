@@ -423,7 +423,7 @@ public class TagsMapActivity extends MapActivity {
 	        return true;
 	        
 	        case R.id.menu_delete:
-	        	
+	        	// Future function
 	        default:
 	        	return super.onOptionsItemSelected(item);
 	        	
